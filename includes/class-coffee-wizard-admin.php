@@ -21,6 +21,9 @@ class Coffee_Wizard_Admin {
         
         // Enqueue admin scripts and styles
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
+        
+        // Add admin notices for settings
+        add_action('admin_notices', array($this, 'admin_notices'));
     }
     
     /**
@@ -80,6 +83,30 @@ class Coffee_Wizard_Admin {
             'coffee_wizard_grinding_options',
             array($this, 'sanitize_grinding_options')
         );
+        
+        // Add redirect after settings save
+        add_action('admin_init', array($this, 'settings_save_redirect'));
+    }
+    
+    /**
+     * Redirect after saving settings
+     */
+    public function settings_save_redirect() {
+        // Check if we need to redirect
+        if (isset($_POST['coffee_wizard_redirect']) && !empty($_POST['coffee_wizard_redirect'])) {
+            // Make sure settings have been saved
+            if (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true') {
+                // Get the redirect URL
+                $redirect_url = esc_url_raw($_POST['coffee_wizard_redirect']);
+                
+                // Add the settings-updated parameter
+                $redirect_url = add_query_arg('settings-updated', 'true', $redirect_url);
+                
+                // Redirect
+                wp_redirect($redirect_url);
+                exit;
+            }
+        }
     }
     
     /**
@@ -221,8 +248,43 @@ class Coffee_Wizard_Admin {
             
             wp_localize_script('coffee-wizard-admin', 'coffee_wizard_admin', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce' => wp_create_nonce('coffee_wizard_admin_nonce')
+                'nonce' => wp_create_nonce('coffee_wizard_admin_nonce'),
+                'i18n' => array(
+                    'at_least_one_option' => __('You must have at least one option.', 'coffee-wizard-form'),
+                    'confirm_delete' => __('Are you sure you want to delete this option?', 'coffee-wizard-form'),
+                    'changes_saved' => __('Changes saved successfully.', 'coffee-wizard-form'),
+                    'error_saving' => __('Error saving changes.', 'coffee-wizard-form')
+                )
             ));
+        }
+    }
+    
+    /**
+     * Display admin notices
+     */
+    public function admin_notices() {
+        // Check if we're on our settings page
+        $screen = get_current_screen();
+        if (!$screen || strpos($screen->id, 'coffee-wizard') === false) {
+            return;
+        }
+        
+        // Display settings updated message
+        if (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true') {
+            ?>
+            <div class="notice notice-success is-dismissible">
+                <p><?php _e('Settings saved successfully.', 'coffee-wizard-form'); ?></p>
+            </div>
+            <?php
+        }
+        
+        // Display error message
+        if (isset($_GET['error']) && !empty($_GET['error'])) {
+            ?>
+            <div class="notice notice-error is-dismissible">
+                <p><?php echo esc_html($_GET['error']); ?></p>
+            </div>
+            <?php
         }
     }
 } 

@@ -12,10 +12,13 @@
             <div id="specialty" class="coffee-wizard-tab-pane active">
                 <form method="post" action="options.php" id="specialty-form">
                     <?php settings_fields('coffee_wizard_weight_options_specialty'); ?>
+                    <?php do_settings_sections('coffee_wizard_weight_options_specialty'); ?>
                     
                     <div class="coffee-wizard-admin-card">
                         <h2><?php _e('Specialty Weight Options', 'coffee-wizard-form'); ?></h2>
                         <p><?php _e('Configure the weight options for specialty coffee products.', 'coffee-wizard-form'); ?></p>
+                        
+                        <input type="hidden" name="coffee_wizard_redirect" value="<?php echo esc_url(admin_url('admin.php?page=coffee-wizard-weight&tab=specialty')); ?>">
                         
                         <table class="form-table">
                             <thead>
@@ -76,10 +79,13 @@
             <div id="blend" class="coffee-wizard-tab-pane">
                 <form method="post" action="options.php" id="blend-form">
                     <?php settings_fields('coffee_wizard_weight_options_blend'); ?>
+                    <?php do_settings_sections('coffee_wizard_weight_options_blend'); ?>
                     
                     <div class="coffee-wizard-admin-card">
                         <h2><?php _e('Blend Weight Options', 'coffee-wizard-form'); ?></h2>
                         <p><?php _e('Configure the weight options for blend coffee products.', 'coffee-wizard-form'); ?></p>
+                        
+                        <input type="hidden" name="coffee_wizard_redirect" value="<?php echo esc_url(admin_url('admin.php?page=coffee-wizard-weight&tab=blend')); ?>">
                         
                         <table class="form-table">
                             <thead>
@@ -139,6 +145,7 @@
     </div>
 </div>
 
+<!-- Templates for adding new rows -->
 <script type="text/html" id="weight-option-template-specialty">
     <tr>
         <td>
@@ -165,4 +172,17 @@
             <button type="button" class="button remove-weight-option"><?php _e('Remove', 'coffee-wizard-form'); ?></button>
         </td>
     </tr>
+</script>
+
+<script>
+    jQuery(document).ready(function($) {
+        // Check if we have a tab parameter in the URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var tab = urlParams.get('tab');
+        
+        // If we have a tab parameter, activate that tab
+        if (tab) {
+            $('.coffee-wizard-tab[data-tab="' + tab + '"]').trigger('click');
+        }
+    });
 </script> 

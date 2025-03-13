@@ -4,10 +4,13 @@
     <div class="coffee-wizard-admin-container">
         <form method="post" action="options.php" id="grinding-form">
             <?php settings_fields('coffee_wizard_grinding_options'); ?>
+            <?php do_settings_sections('coffee_wizard_grinding_options'); ?>
             
             <div class="coffee-wizard-admin-card">
                 <h2><?php _e('Grinding Machine Options', 'coffee-wizard-form'); ?></h2>
                 <p><?php _e('Configure the grinding machine options for coffee products.', 'coffee-wizard-form'); ?></p>
+                
+                <input type="hidden" name="coffee_wizard_redirect" value="<?php echo esc_url(admin_url('admin.php?page=coffee-wizard-grinding')); ?>">
                 
                 <table class="form-table">
                     <thead>
@@ -65,6 +68,7 @@
     </div>
 </div>
 
+<!-- Template for adding new grinding option -->
 <script type="text/html" id="grinding-option-template">
     <tr>
         <td>
