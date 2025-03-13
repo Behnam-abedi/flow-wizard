@@ -1,0 +1,133 @@
+/* Admin Styles for Coffee Wizard */
+
+/* Container */
+.coffee-wizard-admin-container {
+    margin-top: 20px;
+}
+
+/* Card */
+.coffee-wizard-admin-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.coffee-wizard-admin-card h2 {
+    margin-top: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Tabs */
+.coffee-wizard-admin-tabs {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccd0d4;
+}
+
+.coffee-wizard-tab {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-right: 5px;
+    margin-bottom: -1px;
+    background: #f1f1f1;
+    border: 1px solid #ccd0d4;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    text-decoration: none;
+    color: #444;
+    font-weight: 500;
+}
+
+.coffee-wizard-tab:hover {
+    background: #fff;
+    color: #000;
+}
+
+.coffee-wizard-tab.active {
+    background: #fff;
+    border-bottom: 1px solid #fff;
+    color: #0073aa;
+}
+
+/* Tab Content */
+.coffee-wizard-tab-pane {
+    display: none;
+}
+
+.coffee-wizard-tab-pane.active {
+    display: block;
+}
+
+/* Tables */
+.coffee-wizard-admin-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.coffee-wizard-admin-container table th {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ccd0d4;
+    font-weight: 600;
+}
+
+.coffee-wizard-admin-container table td {
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.coffee-wizard-admin-container table tr:last-child td {
+    border-bottom: none;
+}
+
+.coffee-wizard-admin-container input[type="text"],
+.coffee-wizard-admin-container input[type="number"] {
+    width: 100%;
+}
+
+/* Buttons */
+.coffee-wizard-admin-buttons {
+    margin-top: 20px;
+}
+
+.coffee-wizard-admin-buttons .button {
+    margin-right: 10px;
+}
+
+.add-weight-option,
+.add-grinding-option {
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .coffee-wizard-admin-container table th,
+    .coffee-wizard-admin-container table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .coffee-wizard-admin-container table th {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .coffee-wizard-admin-container table td {
+        padding-top: 5px;
+    }
+    
+    .coffee-wizard-admin-container table tr {
+        border-bottom: 1px solid #ccd0d4;
+        margin-bottom: 10px;
+        display: block;
+    }
+    
+    .coffee-wizard-admin-container table tr:last-child {
+        border-bottom: none;
+    }
+} 
