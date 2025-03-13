@@ -69,7 +69,7 @@
 </div>
 
 <!-- Template for adding new grinding option -->
-<script type="text/html" id="grinding-option-template">
+<template id="grinding-option-template">
     <tr>
         <td>
             <input type="text" name="coffee_wizard_grinding_options[{index}][name]" value="" placeholder="<?php _e('e.g., French Press', 'coffee-wizard-form'); ?>" required>
@@ -81,4 +81,68 @@
             <button type="button" class="button remove-grinding-option"><?php _e('Remove', 'coffee-wizard-form'); ?></button>
         </td>
     </tr>
+</template>
+
+<!-- Hidden version for jQuery to access -->
+<div style="display:none" id="hidden-templates">
+    <script type="text/html" id="grinding-option-template-js">
+        <tr>
+            <td>
+                <input type="text" name="coffee_wizard_grinding_options[{index}][name]" value="" placeholder="<?php _e('e.g., French Press', 'coffee-wizard-form'); ?>" required>
+            </td>
+            <td>
+                <input type="number" name="coffee_wizard_grinding_options[{index}][price]" value="0" step="1" min="0" placeholder="<?php _e('e.g., 10000', 'coffee-wizard-form'); ?>" required>
+            </td>
+            <td>
+                <button type="button" class="button remove-grinding-option"><?php _e('Remove', 'coffee-wizard-form'); ?></button>
+            </td>
+        </tr>
+    </script>
+</div>
+
+<script>
+    jQuery(document).ready(function($) {
+        // Transfer template content to the JS-accessible version if needed
+        if ($('#grinding-option-template').length && $('#grinding-option-template-js').length) {
+            if (!$('#grinding-option-template-js').html()) {
+                $('#grinding-option-template-js').html($('#grinding-option-template').html());
+                console.log('Transferred grinding template content');
+            }
+        }
+        
+        // Patch the add grinding option functionality
+        $('.add-grinding-option').off('click').on('click', function(e) {
+            e.preventDefault();
+            console.log('Direct add grinding option handler');
+            
+            // Try both template locations
+            var templateElement = $('#grinding-option-template-js');
+            if (templateElement.length === 0) {
+                templateElement = $('#grinding-option-template');
+            }
+            
+            console.log('Grinding template found:', templateElement.length > 0);
+            
+            if (templateElement.length === 0) {
+                console.error('Template not found: grinding-option-template');
+                alert('Error: Grinding template not found. Please refresh the page and try again.');
+                return;
+            }
+            
+            var template = templateElement.html();
+            var container = $('#grinding-options');
+            
+            if (container.length === 0) {
+                console.error('Container not found: grinding-options');
+                alert('Error: Grinding options container not found. Please refresh the page and try again.');
+                return;
+            }
+            
+            var index = container.find('tr').length;
+            template = template.replace(/{index}/g, index);
+            
+            container.append(template);
+            console.log('New grinding option added successfully');
+        });
+    });
 </script> 

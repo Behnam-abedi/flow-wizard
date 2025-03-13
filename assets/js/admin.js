@@ -17,21 +17,50 @@ jQuery(document).ready(function($) {
         $('#' + tab).addClass('active');
     });
     
-    // Add weight option
-    $('.add-weight-option').on('click', function() {
-        var target = $(this).data('target');
-        console.log('Add weight option clicked for', target);
+    // Debug template existence
+    console.log('Weight templates found:', {
+        'specialty': $('#weight-option-template-specialty').length,
+        'blend': $('#weight-option-template-blend').length,
+        'grinding': $('#grinding-option-template').length
+    });
+    
+    // Add weight option - use event delegation for reliability
+    $(document).on('click', '.add-weight-option', function(e) {
+        e.preventDefault();
+        console.log('Add weight option button clicked');
         
-        var templateElement = $('#weight-option-template-' + target);
+        var target = $(this).data('target');
+        console.log('Target:', target);
+        
+        // Find the template
+        var templateSelector = '#weight-option-template-' + target;
+        var templateElement = $(templateSelector);
+        
+        console.log('Template selector:', templateSelector);
+        console.log('Template element found:', templateElement.length > 0);
+        
         if (templateElement.length === 0) {
-            console.error('Template not found:', 'weight-option-template-' + target);
+            console.error('Template not found:', templateSelector);
+            alert('Error: Template not found for ' + target + ' weight options. Please contact support.');
             return;
         }
         
         var template = templateElement.html();
-        var container = $('#' + target + '-weight-options');
+        if (!template) {
+            console.error('Template is empty for', target);
+            alert('Error: Template is empty for ' + target + ' weight options. Please contact support.');
+            return;
+        }
+        
+        var containerSelector = '#' + target + '-weight-options';
+        var container = $(containerSelector);
+        
+        console.log('Container selector:', containerSelector);
+        console.log('Container element found:', container.length > 0);
+        
         if (container.length === 0) {
-            console.error('Container not found:', target + '-weight-options');
+            console.error('Container not found:', containerSelector);
+            alert('Error: Container not found for ' + target + ' weight options. Please contact support.');
             return;
         }
         
@@ -76,25 +105,38 @@ jQuery(document).ready(function($) {
         }
     });
     
-    // Add grinding option
-    $('.add-grinding-option').on('click', function() {
-        console.log('Add grinding option clicked');
+    // Add grinding option - use event delegation for reliability
+    $(document).on('click', '.add-grinding-option', function(e) {
+        e.preventDefault();
+        console.log('Add grinding option button clicked');
         
         var templateElement = $('#grinding-option-template');
+        console.log('Grinding template found:', templateElement.length > 0);
+        
         if (templateElement.length === 0) {
             console.error('Template not found: grinding-option-template');
+            alert('Error: Grinding option template not found. Please contact support.');
             return;
         }
         
         var template = templateElement.html();
+        if (!template) {
+            console.error('Grinding template is empty');
+            alert('Error: Grinding option template is empty. Please contact support.');
+            return;
+        }
+        
         var container = $('#grinding-options');
+        console.log('Grinding container found:', container.length > 0);
+        
         if (container.length === 0) {
             console.error('Container not found: grinding-options');
+            alert('Error: Grinding options container not found. Please contact support.');
             return;
         }
         
         var index = container.find('tr').length;
-        console.log('Current row count:', index);
+        console.log('Current grinding row count:', index);
         
         // Replace index placeholder
         template = template.replace(/{index}/g, index);

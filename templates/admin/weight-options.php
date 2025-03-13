@@ -146,7 +146,7 @@
 </div>
 
 <!-- Templates for adding new rows -->
-<script type="text/html" id="weight-option-template-specialty">
+<template id="weight-option-template-specialty">
     <tr>
         <td>
             <input type="text" name="coffee_wizard_weight_options_specialty[{index}][weight]" value="" placeholder="<?php _e('e.g., 100g', 'coffee-wizard-form'); ?>" required>
@@ -158,9 +158,9 @@
             <button type="button" class="button remove-weight-option"><?php _e('Remove', 'coffee-wizard-form'); ?></button>
         </td>
     </tr>
-</script>
+</template>
 
-<script type="text/html" id="weight-option-template-blend">
+<template id="weight-option-template-blend">
     <tr>
         <td>
             <input type="text" name="coffee_wizard_weight_options_blend[{index}][weight]" value="" placeholder="<?php _e('e.g., 100g', 'coffee-wizard-form'); ?>" required>
@@ -172,10 +172,56 @@
             <button type="button" class="button remove-weight-option"><?php _e('Remove', 'coffee-wizard-form'); ?></button>
         </td>
     </tr>
-</script>
+</template>
+
+<!-- Hidden versions for jQuery to access -->
+<div style="display:none" id="hidden-templates">
+    <script type="text/html" id="weight-option-template-specialty-js">
+        <tr>
+            <td>
+                <input type="text" name="coffee_wizard_weight_options_specialty[{index}][weight]" value="" placeholder="<?php _e('e.g., 100g', 'coffee-wizard-form'); ?>" required>
+            </td>
+            <td>
+                <input type="number" name="coffee_wizard_weight_options_specialty[{index}][price_multiplier]" value="1.0" step="0.01" min="0" placeholder="<?php _e('e.g., 1.0', 'coffee-wizard-form'); ?>" required>
+            </td>
+            <td>
+                <button type="button" class="button remove-weight-option"><?php _e('Remove', 'coffee-wizard-form'); ?></button>
+            </td>
+        </tr>
+    </script>
+
+    <script type="text/html" id="weight-option-template-blend-js">
+        <tr>
+            <td>
+                <input type="text" name="coffee_wizard_weight_options_blend[{index}][weight]" value="" placeholder="<?php _e('e.g., 100g', 'coffee-wizard-form'); ?>" required>
+            </td>
+            <td>
+                <input type="number" name="coffee_wizard_weight_options_blend[{index}][price_multiplier]" value="1.0" step="0.01" min="0" placeholder="<?php _e('e.g., 1.0', 'coffee-wizard-form'); ?>" required>
+            </td>
+            <td>
+                <button type="button" class="button remove-weight-option"><?php _e('Remove', 'coffee-wizard-form'); ?></button>
+            </td>
+        </tr>
+    </script>
+</div>
 
 <script>
     jQuery(document).ready(function($) {
+        // Transfer template content to the JS-accessible versions if needed
+        if ($('#weight-option-template-specialty').length && $('#weight-option-template-specialty-js').length) {
+            if (!$('#weight-option-template-specialty-js').html()) {
+                $('#weight-option-template-specialty-js').html($('#weight-option-template-specialty').html());
+                console.log('Transferred specialty template content');
+            }
+        }
+        
+        if ($('#weight-option-template-blend').length && $('#weight-option-template-blend-js').length) {
+            if (!$('#weight-option-template-blend-js').html()) {
+                $('#weight-option-template-blend-js').html($('#weight-option-template-blend').html());
+                console.log('Transferred blend template content');
+            }
+        }
+        
         // Check if we have a tab parameter in the URL
         var urlParams = new URLSearchParams(window.location.search);
         var tab = urlParams.get('tab');
@@ -184,5 +230,46 @@
         if (tab) {
             $('.coffee-wizard-tab[data-tab="' + tab + '"]').trigger('click');
         }
+        
+        // Patch the add weight option functionality
+        $('.add-weight-option').off('click').on('click', function(e) {
+            e.preventDefault();
+            console.log('Direct add weight option handler');
+            
+            var target = $(this).data('target');
+            console.log('Target:', target);
+            
+            var templateId = 'weight-option-template-' + target;
+            var templateIdJs = templateId + '-js';
+            
+            // Try both template locations
+            var templateElement = $('#' + templateIdJs);
+            if (templateElement.length === 0) {
+                templateElement = $('#' + templateId);
+            }
+            
+            console.log('Template element found:', templateElement.length > 0);
+            
+            if (templateElement.length === 0) {
+                console.error('Template not found:', templateId);
+                alert('Error: Template not found. Please refresh the page and try again.');
+                return;
+            }
+            
+            var template = templateElement.html();
+            var container = $('#' + target + '-weight-options');
+            
+            if (container.length === 0) {
+                console.error('Container not found:', target + '-weight-options');
+                alert('Error: Option container not found. Please refresh the page and try again.');
+                return;
+            }
+            
+            var index = container.find('tr').length;
+            template = template.replace(/{index}/g, index);
+            
+            container.append(template);
+            console.log('New weight option added successfully');
+        });
     });
 </script> 
