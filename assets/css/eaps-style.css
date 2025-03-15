@@ -1,0 +1,207 @@
+/**
+ * Main plugin styles
+ */
+
+/* Search Icon Styles */
+.eaps-search-container {
+    position: relative;
+}
+
+.eaps-search-icon {
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px;
+    transition: all 0.3s ease;     
+}
+
+.eaps-search-icon:hover {
+    transform: scale(1.1);
+}
+
+.eaps-search-icon i {
+    display: block;
+}
+
+/* Overlay Styles */
+.eaps-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.eaps-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Search Box Styles */
+.eaps-search-box {
+    position: fixed;
+    bottom: -50%;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background-color: #fff;
+    z-index: 9999;
+    transition: bottom 0.4s ease;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.eaps-search-box.active {
+    bottom: 0;
+}
+
+.eaps-search-box-inner {
+    padding: 30px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Search Form Styles */
+.eaps-search-form {
+    margin-bottom: 20px;
+}
+
+.eaps-search-input {
+    width: 100%;
+    padding: 18px 25px;
+    font-size: 22px;
+    border: 2px solid #e5e5e5;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.3s ease;
+    direction: rtl;
+}
+
+.eaps-search-input:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
+}
+
+.eaps-search-subtitle {
+    margin-top: 8px;
+    color: #777;
+    font-size: 14px;
+    text-align: right;
+}
+
+/* Search Results Styles */
+.eaps-search-results {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.eaps-results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 20px;
+}
+
+.eaps-product-item {
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: right;
+    direction: rtl;
+}
+
+.eaps-product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.eaps-product-image {
+    width: 100%;
+    height: 180px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.eaps-product-details {
+    padding: 15px;
+}
+
+.eaps-product-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.eaps-product-price {
+    font-size: 15px;
+    color: #e63946;
+    font-weight: 600;
+}
+
+.eaps-no-results {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+    font-size: 18px;
+    width: 100%;
+}
+
+/* Customize scrollbar */
+.eaps-search-results::-webkit-scrollbar {
+    width: 6px;
+}
+
+.eaps-search-results::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.eaps-search-results::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.eaps-search-results::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .eaps-search-box {
+        height: 70%;
+    }
+    
+    .eaps-search-input {
+        font-size: 18px;
+        padding: 15px 20px;
+    }
+    
+    .eaps-results-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .eaps-search-box {
+        height: 80%;
+    }
+    
+    .eaps-results-container {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,70 +1,69 @@
 <?php
 /**
- * Search Icon Widget
+ * Search Icon Widget for Elementor
  */
 
-// Exit if accessed directly
 if (!defined('ABSPATH')) {
-    exit;
+    exit; // Exit if accessed directly.
 }
 
 /**
- * Search Icon Widget Class
+ * Search Icon Widget
  */
-class Search_Icon_Widget extends \Elementor\Widget_Base {
+class Elementor_Search_Icon_Widget extends \Elementor\Widget_Base {
 
     /**
-     * Get widget name
+     * Get widget name.
+     *
+     * @return string Widget name.
      */
     public function get_name() {
-        return 'search_products_icon';
+        return 'search_icon';
     }
 
     /**
-     * Get widget title
+     * Get widget title.
+     *
+     * @return string Widget title.
      */
     public function get_title() {
-        return esc_html__('Search Products Icon', 'search-products-elementor');
+        return __('AJAX Search Icon', 'elementor-ajax-search');
     }
 
     /**
-     * Get widget icon
+     * Get widget icon.
+     *
+     * @return string Widget icon.
      */
     public function get_icon() {
         return 'eicon-search';
     }
 
     /**
-     * Get widget categories
+     * Get widget categories.
+     *
+     * @return array Widget categories.
      */
     public function get_categories() {
-        return ['basic', 'general'];
+        return ['eaps-elements'];
     }
 
     /**
-     * Get widget keywords
+     * Register widget controls.
      */
-    public function get_keywords() {
-        return ['search', 'products', 'ajax', 'woocommerce'];
-    }
-
-    /**
-     * Register widget controls
-     */
-    protected function register_controls() {
-        // Icon Section
+    protected function _register_controls() {
+        // Icon Settings Section
         $this->start_controls_section(
             'section_icon',
             [
-                'label' => esc_html__('Icon Settings', 'search-products-elementor'),
-                'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+                'label' => __('Icon Settings', 'elementor-ajax-search'),
             ]
         );
 
         $this->add_control(
             'icon_size',
             [
-                'label' => esc_html__('Icon Size', 'search-products-elementor'),
+                'label' => __('Icon Size', 'elementor-ajax-search'),
                 'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range' => [
@@ -79,7 +78,7 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
                     'size' => 24,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .search-icon' => 'font-size: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .eaps-search-icon i' => 'font-size: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -87,168 +86,51 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'icon_color',
             [
-                'label' => esc_html__('Icon Color', 'search-products-elementor'),
+                'label' => __('Icon Color', 'elementor-ajax-search'),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '#000000',
                 'selectors' => [
-                    '{{WRAPPER}} .search-icon' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'icon_hover_color',
-            [
-                'label' => esc_html__('Icon Hover Color', 'search-products-elementor'),
-                'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#555555',
-                'selectors' => [
-                    '{{WRAPPER}} .search-icon:hover' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .eaps-search-icon i' => 'color: {{VALUE}};',
                 ],
             ]
         );
 
         $this->end_controls_section();
 
-        // Search Box Section
+        // Search Box Settings Section
         $this->start_controls_section(
             'section_search_box',
             [
-                'label' => esc_html__('Search Box Settings', 'search-products-elementor'),
-                'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+                'label' => __('Search Box Settings', 'elementor-ajax-search'),
             ]
         );
 
         $this->add_control(
             'search_placeholder',
             [
-                'label' => esc_html__('Search Placeholder', 'search-products-elementor'),
+                'label' => __('Search Placeholder', 'elementor-ajax-search'),
                 'type' => \Elementor\Controls_Manager::TEXT,
-                'default' => esc_html__('جستجوی محصولات', 'search-products-elementor'),
+                'default' => __('جستجوی محصولات', 'elementor-ajax-search'),
             ]
         );
 
         $this->add_control(
             'search_subtitle',
             [
-                'label' => esc_html__('Search Subtitle', 'search-products-elementor'),
+                'label' => __('Search Subtitle', 'elementor-ajax-search'),
                 'type' => \Elementor\Controls_Manager::TEXT,
-                'default' => esc_html__('برای دیدن محصولات تایپ کنید', 'search-products-elementor'),
+                'default' => __('برای دیدن محصولات تایپ کنید', 'elementor-ajax-search'),
             ]
         );
 
         $this->add_control(
             'overlay_color',
             [
-                'label' => esc_html__('Overlay Color', 'search-products-elementor'),
+                'label' => __('Overlay Color', 'elementor-ajax-search'),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => 'rgba(0, 0, 0, 0.5)',
                 'selectors' => [
-                    '.search-overlay' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'search_box_background',
-            [
-                'label' => esc_html__('Search Box Background', 'search-products-elementor'),
-                'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#ffffff',
-                'selectors' => [
-                    '.search-box' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->end_controls_section();
-
-        // Input Style Section
-        $this->start_controls_section(
-            'section_input_style',
-            [
-                'label' => esc_html__('Input Style', 'search-products-elementor'),
-                'tab' => \Elementor\Controls_Manager::TAB_STYLE,
-            ]
-        );
-
-        $this->add_control(
-            'input_background',
-            [
-                'label' => esc_html__('Input Background', 'search-products-elementor'),
-                'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#f5f5f5',
-                'selectors' => [
-                    '.search-input' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'input_text_color',
-            [
-                'label' => esc_html__('Input Text Color', 'search-products-elementor'),
-                'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#333333',
-                'selectors' => [
-                    '.search-input' => 'color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_group_control(
-            \Elementor\Group_Control_Typography::get_type(),
-            [
-                'name' => 'input_typography',
-                'selector' => '.search-input',
-            ]
-        );
-
-        $this->add_group_control(
-            \Elementor\Group_Control_Border::get_type(),
-            [
-                'name' => 'input_border',
-                'selector' => '.search-input',
-                'separator' => 'before',
-            ]
-        );
-
-        $this->add_control(
-            'input_border_radius',
-            [
-                'label' => esc_html__('Border Radius', 'search-products-elementor'),
-                'type' => \Elementor\Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', '%'],
-                'selectors' => [
-                    '.search-input' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-                'default' => [
-                    'top' => '8',
-                    'right' => '8',
-                    'bottom' => '8',
-                    'left' => '8',
-                    'unit' => 'px',
-                    'isLinked' => true,
-                ],
-            ]
-        );
-
-        $this->add_responsive_control(
-            'input_padding',
-            [
-                'label' => esc_html__('Padding', 'search-products-elementor'),
-                'type' => \Elementor\Controls_Manager::DIMENSIONS,
-                'size_units' => ['px', 'em', '%'],
-                'selectors' => [
-                    '.search-input' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-                ],
-                'default' => [
-                    'top' => '15',
-                    'right' => '20',
-                    'bottom' => '15',
-                    'left' => '20',
-                    'unit' => 'px',
-                    'isLinked' => false,
+                    '.eaps-overlay' => 'background-color: {{VALUE}};',
                 ],
             ]
         );
@@ -257,76 +139,30 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
     }
 
     /**
-     * Render widget output on the frontend
+     * Render widget output on the frontend.
      */
     protected function render() {
         $settings = $this->get_settings_for_display();
         ?>
-        <div class="search-icon-widget" onclick="if(typeof window.searchProductsElementor !== 'undefined') { window.searchProductsElementor.openSearch(); } else { console.error('Search function not found'); }">
-            <div class="search-icon-container">
-                <i class="search-icon eicon-search"></i>
+        <div class="eaps-search-container">
+            <div class="eaps-search-icon">
+                <i class="fa fa-search"></i>
             </div>
-        </div>
-        
-        <!-- Immediately add the popup to the page instead of using a template -->
-        <div class="search-overlay"></div>
-        <div class="search-box">
-            <div class="search-box-inner">
-                <div class="search-input-container">
-                    <input type="text" class="search-input" placeholder="<?php echo esc_attr($settings['search_placeholder']); ?>">
-                    <div class="search-subtitle"><?php echo esc_html($settings['search_subtitle']); ?></div>
-                </div>
-                <div class="search-results-container">
-                    <div class="search-results-inner">
-                        <!-- Results will be loaded here via AJAX -->
+            
+            <div class="eaps-overlay"></div>
+            
+            <div class="eaps-search-box">
+                <div class="eaps-search-box-inner">
+                    <div class="eaps-search-form">
+                        <input type="text" class="eaps-search-input" placeholder="<?php echo esc_attr($settings['search_placeholder']); ?>">
+                        <div class="eaps-search-subtitle"><?php echo esc_html($settings['search_subtitle']); ?></div>
+                    </div>
+                    <div class="eaps-search-results">
+                        <div class="eaps-results-container"></div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <script>
-            // Add direct click handler for better compatibility
-            jQuery(document).ready(function($) {
-                $('.search-icon-widget').on('click', function() {
-                    console.log('Widget clicked directly');
-                    
-                    // Make sure search elements exist
-                    if ($('.search-overlay').length === 0 || $('.search-box').length === 0) {
-                        console.error('Search elements not found');
-                        return;
-                    }
-                    
-                    // Add active class to body
-                    $('body').addClass('search-active');
-                    
-                    // Show overlay with animation
-                    $('.search-overlay').addClass('active');
-                    
-                    // Show search box with animation
-                    setTimeout(function() {
-                        $('.search-box').addClass('active');
-                        
-                        // Focus on input after animation
-                        setTimeout(function() {
-                            $('.search-input').focus();
-                        }, 400);
-                    }, 100);
-                });
-            });
-        </script>
         <?php
     }
-
-    /**
-     * Render widget output in the editor
-     */
-    protected function content_template() {
-        ?>
-        <div class="search-icon-widget">
-            <div class="search-icon-container">
-                <i class="search-icon eicon-search"></i>
-            </div>
-        </div>
-        <?php
-    }
-} 
+}
