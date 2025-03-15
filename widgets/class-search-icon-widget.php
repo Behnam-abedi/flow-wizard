@@ -262,29 +262,58 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         ?>
-        <div class="search-icon-widget">
+        <div class="search-icon-widget" onclick="if(typeof window.searchProductsElementor !== 'undefined') { window.searchProductsElementor.openSearch(); } else { console.error('Search function not found'); }">
             <div class="search-icon-container">
                 <i class="search-icon eicon-search"></i>
             </div>
-
-            <!-- Search popup HTML that will be rendered in the footer -->
-            <div class="search-popup-template" style="display:none;">
-                <div class="search-overlay"></div>
-                <div class="search-box">
-                    <div class="search-box-inner">
-                        <div class="search-input-container">
-                            <input type="text" class="search-input" placeholder="<?php echo esc_attr($settings['search_placeholder']); ?>">
-                            <div class="search-subtitle"><?php echo esc_html($settings['search_subtitle']); ?></div>
-                        </div>
-                        <div class="search-results-container">
-                            <div class="search-results-inner">
-                                <!-- Results will be loaded here via AJAX -->
-                            </div>
-                        </div>
+        </div>
+        
+        <!-- Immediately add the popup to the page instead of using a template -->
+        <div class="search-overlay"></div>
+        <div class="search-box">
+            <div class="search-box-inner">
+                <div class="search-input-container">
+                    <input type="text" class="search-input" placeholder="<?php echo esc_attr($settings['search_placeholder']); ?>">
+                    <div class="search-subtitle"><?php echo esc_html($settings['search_subtitle']); ?></div>
+                </div>
+                <div class="search-results-container">
+                    <div class="search-results-inner">
+                        <!-- Results will be loaded here via AJAX -->
                     </div>
                 </div>
             </div>
         </div>
+        
+        <script>
+            // Add direct click handler for better compatibility
+            jQuery(document).ready(function($) {
+                $('.search-icon-widget').on('click', function() {
+                    console.log('Widget clicked directly');
+                    
+                    // Make sure search elements exist
+                    if ($('.search-overlay').length === 0 || $('.search-box').length === 0) {
+                        console.error('Search elements not found');
+                        return;
+                    }
+                    
+                    // Add active class to body
+                    $('body').addClass('search-active');
+                    
+                    // Show overlay with animation
+                    $('.search-overlay').addClass('active');
+                    
+                    // Show search box with animation
+                    setTimeout(function() {
+                        $('.search-box').addClass('active');
+                        
+                        // Focus on input after animation
+                        setTimeout(function() {
+                            $('.search-input').focus();
+                        }, 400);
+                    }, 100);
+                });
+            });
+        </script>
         <?php
     }
 

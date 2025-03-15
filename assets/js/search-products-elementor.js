@@ -21,11 +21,23 @@
     function initSearch() {
         // When DOM is ready
         $(document).ready(function() {
-            // Add search popup to footer
-            if ($('.search-popup-template').length) {
-                const searchPopupTemplate = $('.search-popup-template').first();
-                $('body').append(searchPopupTemplate.html());
-                searchPopupTemplate.remove();
+            console.log('Search Products Elementor: DOM is ready');
+            
+            // Directly add click handler to all search icons
+            $(document).on('click', '.search-icon-widget, .search-icon, .search-icon-container', function(e) {
+                console.log('Search icon clicked');
+                openSearch();
+                e.stopPropagation();
+            });
+
+            // Add search popup to footer if it doesn't exist already
+            if ($('.search-overlay, .search-box').length === 0) {
+                console.log('Adding search popup to footer');
+                if ($('.search-popup-template').length) {
+                    const searchPopupTemplate = $('.search-popup-template').first();
+                    $('body').append(searchPopupTemplate.html());
+                    searchPopupTemplate.remove();
+                }
             }
 
             // Cache DOM elements
@@ -35,8 +47,11 @@
             searchInput = $('.search-input');
             searchResults = $('.search-results-inner');
 
-            // Add click event to search icon
-            $('.search-icon-widget').on('click', openSearch);
+            // Log if elements are found
+            console.log('Search overlay found:', searchOverlay.length > 0);
+            console.log('Search box found:', searchBox.length > 0);
+            console.log('Search input found:', searchInput.length > 0);
+            console.log('Search results found:', searchResults.length > 0);
 
             // Add close events
             $(document).on('keydown', function(e) {
@@ -45,11 +60,15 @@
                 }
             });
 
-            searchOverlay.on('click', closeSearch);
+            searchOverlay.on('click', function() {
+                console.log('Overlay clicked, closing search');
+                closeSearch();
+            });
 
             // Add input event for search
-            searchInput.on('input', function() {
+            $(document).on('input', '.search-input', function() {
                 const query = $(this).val();
+                console.log('Search input changed:', query);
                 
                 // Clear previous timer
                 if (searchTimer) {
@@ -68,7 +87,36 @@
      * Open Search Popup
      */
     function openSearch() {
-        if (isSearchActive) return;
+        console.log('Opening search popup');
+        if (isSearchActive) {
+            console.log('Search already active, returning');
+            return;
+        }
+        
+        // Make sure elements are re-cached
+        searchOverlay = $('.search-overlay');
+        searchBox = $('.search-box');
+        searchInput = $('.search-input');
+        
+        // Check if elements exist
+        if (searchOverlay.length === 0 || searchBox.length === 0) {
+            console.error('Search elements not found, attempting to add them');
+            
+            // Try to add search elements again
+            if ($('.search-popup-template').length) {
+                const searchPopupTemplate = $('.search-popup-template').first();
+                $('body').append(searchPopupTemplate.html());
+                searchPopupTemplate.remove();
+                
+                // Re-cache elements
+                searchOverlay = $('.search-overlay');
+                searchBox = $('.search-box');
+                searchInput = $('.search-input');
+            } else {
+                console.error('Search popup template not found');
+                return;
+            }
+        }
         
         isSearchActive = true;
         
@@ -93,7 +141,11 @@
      * Close Search Popup
      */
     function closeSearch() {
-        if (!isSearchActive) return;
+        console.log('Closing search popup');
+        if (!isSearchActive) {
+            console.log('Search not active, returning');
+            return;
+        }
         
         isSearchActive = false;
         
@@ -119,6 +171,11 @@
      * Perform AJAX Search
      */
     function performSearch(query) {
+        console.log('Performing search for:', query);
+        
+        // Re-cache search results element
+        searchResults = $('.search-results-inner');
+        
         // Show loading
         searchResults.html('<div class="search-loading"><div class="search-loading-spinner"></div></div>');
         
@@ -138,13 +195,15 @@
                 search_query: query
             },
             success: function(response) {
+                console.log('Search response received:', response);
                 if (response.success) {
                     displayResults(response.data);
                 } else {
                     searchResults.html('<div class="search-no-results">Error: Could not fetch results</div>');
                 }
             },
-            error: function() {
+            error: function(error) {
+                console.error('AJAX error:', error);
                 searchResults.html('<div class="search-no-results">Error: Could not fetch results</div>');
             }
         });
@@ -159,6 +218,8 @@
         
         const products = data.products;
         const count = data.count;
+        
+        console.log('Displaying', count, 'results');
         
         // If no products found
         if (count === 0) {
@@ -183,6 +244,19 @@
     }
 
     // Initialize search functionality
+    console.log('Search Products Elementor: Initializing');
     initSearch();
+    
+    // Backup initialization
+    $(window).on('load', function() {
+        console.log('Window loaded, reinitializing search');
+        initSearch();
+    });
+    
+    // Make functions available globally for debugging
+    window.searchProductsElementor = {
+        openSearch: openSearch,
+        closeSearch: closeSearch
+    };
 
 })(jQuery); 

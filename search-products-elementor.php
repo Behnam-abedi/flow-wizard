@@ -45,8 +45,23 @@ final class Search_Products_Elementor {
         // Load textdomain
         add_action('plugins_loaded', [$this, 'load_textdomain']);
         
+        // Check if Elementor is installed and activated
+        if (!did_action('elementor/loaded')) {
+            add_action('admin_notices', [$this, 'admin_notice_missing_elementor']);
+            return;
+        }
+        
+        // Check if WooCommerce is installed and activated
+        if (!class_exists('WooCommerce')) {
+            add_action('admin_notices', [$this, 'admin_notice_missing_woocommerce']);
+            return;
+        }
+        
         // Register widget
         add_action('elementor/widgets/widgets_registered', [$this, 'register_widgets']);
+        
+        // For Elementor 3.0+
+        add_action('elementor/widgets/register', [$this, 'register_widgets_new']);
         
         // Enqueue styles and scripts
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
@@ -54,6 +69,45 @@ final class Search_Products_Elementor {
         // Register AJAX handlers
         add_action('wp_ajax_search_products', [$this, 'ajax_search_products']);
         add_action('wp_ajax_nopriv_search_products', [$this, 'ajax_search_products']);
+        
+        // Add debugging information
+        add_action('wp_footer', [$this, 'add_debug_info']);
+    }
+
+    /**
+     * Admin notice for missing Elementor
+     */
+    public function admin_notice_missing_elementor() {
+        if (isset($_GET['activate'])) {
+            unset($_GET['activate']);
+        }
+
+        $message = sprintf(
+            /* translators: 1: Plugin name 2: Elementor */
+            esc_html__('"%1$s" requires "%2$s" to be installed and activated.', 'search-products-elementor'),
+            '<strong>' . esc_html__('Search Products Elementor', 'search-products-elementor') . '</strong>',
+            '<strong>' . esc_html__('Elementor', 'search-products-elementor') . '</strong>'
+        );
+
+        printf('<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message);
+    }
+
+    /**
+     * Admin notice for missing WooCommerce
+     */
+    public function admin_notice_missing_woocommerce() {
+        if (isset($_GET['activate'])) {
+            unset($_GET['activate']);
+        }
+
+        $message = sprintf(
+            /* translators: 1: Plugin name 2: WooCommerce */
+            esc_html__('"%1$s" requires "%2$s" to be installed and activated.', 'search-products-elementor'),
+            '<strong>' . esc_html__('Search Products Elementor', 'search-products-elementor') . '</strong>',
+            '<strong>' . esc_html__('WooCommerce', 'search-products-elementor') . '</strong>'
+        );
+
+        printf('<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message);
     }
 
     /**
@@ -64,7 +118,7 @@ final class Search_Products_Elementor {
     }
 
     /**
-     * Register Elementor widgets
+     * Register Elementor widgets (for Elementor < 3.0)
      */
     public function register_widgets() {
         // Require the widget class
@@ -72,6 +126,17 @@ final class Search_Products_Elementor {
         
         // Register the widget
         \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \Search_Icon_Widget());
+    }
+    
+    /**
+     * Register Elementor widgets (for Elementor >= 3.0)
+     */
+    public function register_widgets_new($widgets_manager) {
+        // Require the widget class
+        require_once(SPE_PATH . 'widgets/class-search-icon-widget.php');
+        
+        // Register the widget
+        $widgets_manager->register(new \Search_Icon_Widget());
     }
 
     /**
@@ -152,6 +217,22 @@ final class Search_Products_Elementor {
             'products' => $products,
             'count' => count($products),
         ]);
+    }
+    
+    /**
+     * Add debugging information to footer
+     */
+    public function add_debug_info() {
+        if (current_user_can('administrator')) {
+            echo '<div style="display:none;">';
+            echo '<div id="search-products-debug">Plugin version: ' . SPE_VERSION . '</div>';
+            echo '</div>';
+            
+            echo '<script>
+                console.log("Search Products Elementor loaded successfully");
+                console.log("Plugin URL: ' . SPE_URL . '");
+            </script>';
+        }
     }
 }
 
