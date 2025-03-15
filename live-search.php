@@ -34,6 +34,6 @@ function live_search_shortcode() {
 }
 add_shortcode('live_search', 'live_search_shortcode');
 
-// AJAX handler
+// AJAX handler 
 add_action('wp_ajax_live_search', 'live_search_results');
 add_action('wp_ajax_nopriv_live_search', 'live_search_results');

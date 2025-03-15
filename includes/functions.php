@@ -62,4 +62,4 @@ function live_search_results() {
     
     echo $output;
     wp_die();
-}
+};
