@@ -1,37 +1,47 @@
 jQuery(document).ready(function($) {
-    var searchTimeout;
+    // فعال‌سازی جستجو با تایمر
+    let searchTimer;
     
-    $(document).on('input', '#live-search-input', function() { // اصلاح شده
-        clearTimeout(searchTimeout);
-        var searchTerm = $(this).val();
+    // انتخاب مستقیم المنت ورودی
+    $('#live-search-input').on('input keyup', function(e) {
+        clearTimeout(searchTimer);
+        const searchTerm = $(this).val().trim();
         
-        if(searchTerm.length < 1) { // تغییر شرط به 1 کاراکتر
+        // اگر کمتر از ۲ کاراکتر بود
+        if(searchTerm.length < 2) {
             $('#live-search-results').html('').removeClass('active');
             return;
         }
         
-        searchTimeout = setTimeout(function() {
+        // شروع تایمر
+        searchTimer = setTimeout(() => {
+            console.log('ارسال درخواست برای:', searchTerm); // دیباگ
+            
             $.ajax({
                 url: live_search_obj.ajaxurl,
-                type: 'POST',
+                method: 'POST',
+                dataType: 'html',
                 data: {
                     action: 'live_search',
-                    search_term: searchTerm
+                    search_term: searchTerm,
+                    security: live_search_obj.nonce
                 },
                 beforeSend: function() {
-                    $('#live-search-results').html('<div class="loading">در حال جستجو...</div>').addClass('active');
+                    $('#live-search-results').html('<div class="loading">جستجو...</div>').addClass('active');
                 },
                 success: function(response) {
+                    console.log('پاسخ دریافت شد:', response); // دیباگ
                     $('#live-search-results').html(response).addClass('active');
                 },
-                error: function(xhr, status, error) { // افزودن هندلر خطا
-                    console.error("AJAX Error:", status, error);
+                error: function(xhr, status, error) {
+                    console.error('خطای AJAX:', status, error);
+                    $('#live-search-results').html('<div class="error">خطا در ارتباط با سرور</div>');
                 }
             });
-        }, 200); // کاهش تاخیر به 200ms
+        }, 300);
     });
-    
-    // Close results when clicking outside
+
+    // بستن نتایج با کلیک خارج
     $(document).on('click', function(e) {
         if (!$(e.target).closest('.live-search-container').length) {
             $('#live-search-results').removeClass('active');
