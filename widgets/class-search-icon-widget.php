@@ -17,14 +17,14 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
      * Get widget name
      */
     public function get_name() {
-        return 'search_icon';
+        return 'search_products_icon';
     }
 
     /**
      * Get widget title
      */
     public function get_title() {
-        return esc_html__('Search Icon', 'search-products-elementor');
+        return esc_html__('Search Products Icon', 'search-products-elementor');
     }
 
     /**
@@ -38,7 +38,7 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
      * Get widget categories
      */
     public function get_categories() {
-        return ['general'];
+        return ['basic', 'general'];
     }
 
     /**
@@ -51,7 +51,7 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
     /**
      * Register widget controls
      */
-    protected function _register_controls() {
+    protected function register_controls() {
         // Icon Section
         $this->start_controls_section(
             'section_icon',
@@ -124,7 +124,7 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
             [
                 'label' => esc_html__('Search Placeholder', 'search-products-elementor'),
                 'type' => \Elementor\Controls_Manager::TEXT,
-                'default' => esc_html__('Search Products', 'search-products-elementor'),
+                'default' => esc_html__('جستجوی محصولات', 'search-products-elementor'),
             ]
         );
 
@@ -133,7 +133,7 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
             [
                 'label' => esc_html__('Search Subtitle', 'search-products-elementor'),
                 'type' => \Elementor\Controls_Manager::TEXT,
-                'default' => esc_html__('Type to see products', 'search-products-elementor'),
+                'default' => esc_html__('برای دیدن محصولات تایپ کنید', 'search-products-elementor'),
             ]
         );
 
@@ -320,7 +320,7 @@ class Search_Icon_Widget extends \Elementor\Widget_Base {
     /**
      * Render widget output in the editor
      */
-    protected function _content_template() {
+    protected function content_template() {
         ?>
         <div class="search-icon-widget">
             <div class="search-icon-container">

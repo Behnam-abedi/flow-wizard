@@ -12,12 +12,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Define plugin constants
-define('SPE_VERSION', '1.0.0');
-define('SPE_FILE', __FILE__);
-define('SPE_PATH', plugin_dir_path(SPE_FILE));
-define('SPE_URL', plugin_dir_url(SPE_FILE));
-
 /**
  * Main Plugin Class
  */
@@ -42,6 +36,9 @@ final class Search_Products_Elementor {
      * Constructor
      */
     public function __construct() {
+        // Define plugin constants
+        $this->define_constants();
+        
         // Load textdomain
         add_action('plugins_loaded', [$this, 'load_textdomain']);
         
@@ -57,7 +54,39 @@ final class Search_Products_Elementor {
             return;
         }
         
-        // Register widget
+        // Register Category
+        add_action('elementor/elements/categories_registered', [$this, 'add_elementor_widget_categories']);
+        
+        // Include files
+        $this->includes();
+        
+        // Initialize the plugin
+        $this->init();
+    }
+
+    /**
+     * Define Constants
+     */
+    private function define_constants() {
+        define('SPE_VERSION', '1.0.0');
+        define('SPE_FILE', __FILE__);
+        define('SPE_PATH', plugin_dir_path(SPE_FILE));
+        define('SPE_URL', plugin_dir_url(SPE_FILE));
+    }
+
+    /**
+     * Include required files
+     */
+    private function includes() {
+        // Include the widget class
+        require_once(SPE_PATH . 'widgets/class-search-icon-widget.php');
+    }
+
+    /**
+     * Initialize the plugin
+     */
+    private function init() {
+        // Register widgets
         add_action('elementor/widgets/widgets_registered', [$this, 'register_widgets']);
         
         // For Elementor 3.0+
@@ -111,6 +140,19 @@ final class Search_Products_Elementor {
     }
 
     /**
+     * Add Elementor widget categories
+     */
+    public function add_elementor_widget_categories($elements_manager) {
+        $elements_manager->add_category(
+            'search-products-elementor',
+            [
+                'title' => esc_html__('Search Products', 'search-products-elementor'),
+                'icon' => 'fa fa-search',
+            ]
+        );
+    }
+
+    /**
      * Load plugin textdomain
      */
     public function load_textdomain() {
@@ -121,8 +163,10 @@ final class Search_Products_Elementor {
      * Register Elementor widgets (for Elementor < 3.0)
      */
     public function register_widgets() {
-        // Require the widget class
-        require_once(SPE_PATH . 'widgets/class-search-icon-widget.php');
+        // Check if Elementor is installed
+        if (!did_action('elementor/loaded')) {
+            return;
+        }
         
         // Register the widget
         \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \Search_Icon_Widget());
@@ -132,9 +176,6 @@ final class Search_Products_Elementor {
      * Register Elementor widgets (for Elementor >= 3.0)
      */
     public function register_widgets_new($widgets_manager) {
-        // Require the widget class
-        require_once(SPE_PATH . 'widgets/class-search-icon-widget.php');
-        
         // Register the widget
         $widgets_manager->register(new \Search_Icon_Widget());
     }
@@ -231,10 +272,17 @@ final class Search_Products_Elementor {
             echo '<script>
                 console.log("Search Products Elementor loaded successfully");
                 console.log("Plugin URL: ' . SPE_URL . '");
+                console.log("Plugin version: ' . SPE_VERSION . '");
+                console.log("Elementor widgets registered");
             </script>';
         }
     }
 }
 
 // Initialize the plugin
-Search_Products_Elementor::instance(); 
+function search_products_elementor() {
+    return Search_Products_Elementor::instance();
+}
+
+// Run the plugin
+search_products_elementor(); 
