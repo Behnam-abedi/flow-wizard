@@ -25,6 +25,20 @@ class Elementor_AJAX_Product_Search {
      * Initialize the plugin
      */
     public function __construct() {
+        // Load plugin after Elementor is loaded
+        add_action('plugins_loaded', array($this, 'init_plugin'));
+    }
+
+    /**
+     * Initialize the plugin after Elementor is loaded
+     */
+    public function init_plugin() {
+        // Check if Elementor is installed and activated
+        if (!did_action('elementor/loaded')) {
+            add_action('admin_notices', array($this, 'admin_notice_missing_elementor'));
+            return;
+        }
+
         // Load dependencies
         $this->load_dependencies();
         
@@ -36,6 +50,23 @@ class Elementor_AJAX_Product_Search {
         // Register AJAX handlers
         add_action('wp_ajax_eaps_search_products', array($this, 'ajax_search_products'));
         add_action('wp_ajax_nopriv_eaps_search_products', array($this, 'ajax_search_products'));
+    }
+
+    /**
+     * Admin notice for missing Elementor
+     */
+    public function admin_notice_missing_elementor() {
+        if (isset($_GET['activate'])) {
+            unset($_GET['activate']);
+        }
+
+        $message = sprintf(
+            esc_html__('"%1$s" requires "%2$s" to be installed and activated.', 'elementor-ajax-search'),
+            '<strong>' . esc_html__('Elementor AJAX Product Search', 'elementor-ajax-search') . '</strong>',
+            '<strong>' . esc_html__('Elementor', 'elementor-ajax-search') . '</strong>'
+        );
+
+        printf('<div class="notice notice-error"><p>%1$s</p></div>', $message);
     }
 
     /**
