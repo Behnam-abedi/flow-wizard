@@ -9,6 +9,8 @@ if (!defined('ABSPATH')) {
 
 /**
  * Search Icon Widget
+ * 
+ * IMPORTANT: This file is only included AFTER Elementor is fully loaded
  */
 class Elementor_Search_Icon_Widget extends \Elementor\Widget_Base {
 
@@ -52,6 +54,9 @@ class Elementor_Search_Icon_Widget extends \Elementor\Widget_Base {
      * Register widget controls.
      */
     protected function _register_controls() {
+        // For Elementor 3.5.0 and higher
+        $controls_method = method_exists($this, 'register_controls') ? 'register_controls' : '_register_controls';
+        
         // Icon Settings Section
         $this->start_controls_section(
             'section_icon',
