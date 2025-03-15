@@ -39,7 +39,7 @@ class Elementor_AJAX_Product_Search {
             return;
         }
 
-        // Load dependencies
+        // Load dependencies.
         $this->load_dependencies();
         
         // Register hooks
