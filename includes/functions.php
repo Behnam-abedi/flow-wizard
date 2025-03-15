@@ -1,7 +1,8 @@
 <?php
 function live_search_results() {
     $search_term = sanitize_text_field($_POST['search_term']);
-    
+    header('Content-Type: text/html; charset=UTF-8'); // حل مشکل کدگذاری
+    check_ajax_referer('live_search_nonce', 'security'); // افزودن نانسی
     $results = array();
     
     // Search in posts
