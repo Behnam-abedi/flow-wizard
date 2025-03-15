@@ -1,90 +1,131 @@
 # Coffee Wizard Form
 
-A multi-step wizard form for coffee product selection in WordPress/WooCommerce.
+A WordPress plugin that adds a wizard-style form for coffee product ordering with advanced options for weights and grinding.
 
 ## Description
 
-Coffee Wizard Form is a WordPress plugin that creates a beautiful, multi-step wizard form for coffee product selection. It allows customers to:
+Coffee Wizard Form is a WooCommerce extension that provides a user-friendly, step-by-step wizard interface for customers to order coffee products. The plugin allows shop administrators to configure product categories, weight options with price coefficients, and grinding options.
 
-1. Select a coffee product category and subcategory
-2. Choose a specific coffee product
-3. Select a weight option
-4. Choose a grinding type and machine (optional)
-5. Add order notes
-6. Review their order before adding to cart
+### Features
 
-The plugin integrates with WooCommerce and allows for custom pricing based on weight and grinding options.
-
-## Installation
-
-1. Upload the `coffee-wizard-form` folder to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Configure the weight and grinding options in the Coffee Wizard admin menu
-4. Add the shortcode `[coffee_wizard_form]` to any page where you want to display the wizard form
+- Four-step wizard interface
+- Category and subcategory navigation with breadcrumb
+- Weight selection with automatic price calculation
+- Optional grinding service with customizable grinder options
+- Responsive design with mobile support
+- RTL language support
+- Dark mode support
+- Accessibility compliant
 
 ## Requirements
 
 - WordPress 5.0 or higher
-- WooCommerce 4.0 or higher
-- A theme that supports WooCommerce
+- WooCommerce 3.0 or higher
+- PHP 7.2 or higher
 
-## Configuration
+## Installation
 
-### Category Structure
-
-The plugin requires the following category structure in WooCommerce:
-
-- Quick Order (ID: 150)
-  - Blend (ID: 129, Slug: blend)
-  - Specialty (ID: 130, Slug: specialty)
-
-You can create these categories in the WooCommerce > Products > Categories section of your WordPress admin.
-
-### Weight Options
-
-Configure weight options for each coffee category (Specialty and Blend) in the Coffee Wizard > Weight Options page. For each weight option, you can set:
-
-- Weight (e.g., 100g, 250g, 500g)
-- Price Multiplier (e.g., 1.0, 2.5, 4.0)
-
-The price multiplier is used to calculate the final price based on the base price of the product.
-
-### Grinding Options
-
-Configure grinding machine options in the Coffee Wizard > Grinding Options page. For each grinding machine, you can set:
-
-- Machine Name (e.g., French Press, Espresso, Pour Over)
-- Price (additional cost for grinding)
-
-### Category Icons
-
-You can add icon classes to your product categories by editing the category and entering a Font Awesome icon class in the "Category Icon Class" field.
+1. Download the plugin zip file
+2. Go to WordPress admin panel > Plugins > Add New
+3. Click "Upload Plugin" and select the downloaded zip file
+4. Click "Install Now"
+5. After installation, click "Activate"
 
 ## Usage
 
-1. Add the shortcode `[coffee_wizard_form]` to any page where you want to display the wizard form.
-2. Customers will be guided through the multi-step process to select their coffee products.
-3. When a customer completes the form, the product will be added to their cart with the selected options.
-4. Customers can choose to add another product or proceed to checkout.
+### Admin Configuration
+
+1. Go to WordPress admin panel > Coffee Wizard
+2. Configure the following settings:
+
+#### Categories
+- Select two main product categories for the wizard form
+- These categories will be displayed as the first options in the wizard
+
+#### Weights & Coefficients
+- Add different weight options (e.g., 250g, 500g, 1kg)
+- Set price coefficients for each weight
+- Example: 0.25 coefficient for 250g means the price will be 25% of the full product price
+
+#### Grinder Options
+- Add different grinder options
+- Set grinding service prices for each option
+
+### Frontend Usage
+
+Add the wizard form to any page or post using the shortcode:
+
+```
+[coffee_wizard]
+```
+
+The wizard will guide customers through four steps:
+
+1. **Coffee Selection**
+   - Choose from main categories
+   - Navigate through subcategories
+   - Select the desired product
+
+2. **Weight Selection**
+   - Choose from available weight options
+   - See adjusted prices based on weight coefficients
+
+3. **Grinding Options**
+   - Choose whether to grind the coffee
+   - If yes, select from available grinder options
+
+4. **Order Details**
+   - Add special instructions
+   - Review order summary
+   - Add to cart
 
 ## Customization
 
-You can customize the appearance of the wizard form by modifying the CSS in the `assets/css/public.css` file.
+### CSS Customization
 
-## Troubleshooting
+The plugin includes two CSS files that can be customized:
 
-If you encounter any issues with the plugin, please check the following:
+- `assets/css/public.css` - Frontend styles
+- `assets/css/admin.css` - Admin panel styles
 
-1. Make sure you have the correct category structure set up in WooCommerce.
-2. Verify that you have configured weight options for both Specialty and Blend categories.
-3. Check that your products are assigned to the correct categories.
-4. Ensure that WooCommerce is properly configured and working.
+### Filters and Actions
+
+The plugin provides several filters and actions for developers to extend its functionality:
+
+```php
+// Modify weight coefficients
+add_filter('coffee_wizard_weight_coefficient', function($coefficient, $weight) {
+    // Your custom logic
+    return $coefficient;
+}, 10, 2);
+
+// Modify grinder prices
+add_filter('coffee_wizard_grinder_price', function($price, $grinder) {
+    // Your custom logic
+    return $price;
+}, 10, 2);
+
+// Action before adding to cart
+add_action('coffee_wizard_before_add_to_cart', function($product_id, $order_data) {
+    // Your custom logic
+}, 10, 2);
+```
+
+## Support
+
+For support, feature requests, or bug reports, please visit our [GitHub repository](https://github.com/your-username/coffee-wizard-form) or contact our support team.
 
 ## License
 
 This plugin is licensed under the GPL v2 or later.
 
-## Credits
+```
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-- Font Awesome for the icons
-- jQuery for the JavaScript functionality 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details. 
